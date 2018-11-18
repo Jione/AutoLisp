@@ -101,7 +101,7 @@
 )
 ;;RandomNumberGenerator
 (defun #RNG nil
-  (fix (rem (atof (vl-list->string (reverse (vl-string->list (rtos (getvar "cputicks") 2 0))))) 256))
+  (fix (rem (atof (substr (vl-list->string (reverse (vl-string->list (rtos (getvar "cputicks") 2 0)))) 1 8)) 256))
 )
 ;;String or Hex Checker
 (defun #StringCheck (byte pad str / hexp str_lst)
@@ -327,7 +327,7 @@
 (if mod
   (progn
     (setq pad (reverse (apply 'append (last output))))
-    (if (> 16 (car pad)) (repeat (car pad) (setq pad (cdr pad))))
+    (if (>= 16 (car pad)) (repeat (car pad) (setq pad (cdr pad))))
     (setq output (reverse (cdr (reverse output))))
     (if pad (setq output (append output (list (#bit_Separator 32 (reverse pad))))))
   )
