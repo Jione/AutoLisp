@@ -114,21 +114,22 @@
   )
 )
 (setq str_lst (if hexp (#Hex2Dec str) (vl-string->list str)))
+(setq hexp (- byte (rem (length str_lst) byte)))
 (cond
   ((not byte) t)
   ((= pad "ISO-10126")
-    (repeat (1- (- byte (rem (length str_lst) byte)))
+    (repeat (1- hexp)
       (setq str_lst (append str_lst (list (#RNG))))
     )
-    (setq str_lst (append str_lst (list (- byte (rem (length str_lst) byte)))))
+    (setq str_lst (append str_lst (list hexp)))
   )
   ((= pad "Zero")
-    (repeat (- byte (rem (length str_lst) byte))
+    (repeat hexp
       (setq str_lst (append str_lst (list 0)))
     )
   )
   ((= pad "PKCS#5")
-    (repeat (- byte (rem (length str_lst) byte))
+    (repeat hexp
       (setq str_lst (append str_lst (list (- byte (rem (length str_lst) byte)))))
     )
   )
@@ -215,7 +216,7 @@
 	)
       )
     )
-    (#bit_Separator 32 $dat) (#bit_Separator 32 $iv) (car $scKey)
+    (#bit_Separator 32 $dat) $iv (car $scKey)
   )
 )
 (setq RKey (cdr $scKey))
@@ -246,7 +247,7 @@
 )
 ;;Encript AES-128-CBC
 (defun #EncriptCBC ($dat $iv $scKey / iv)
-(setq iv $iv)
+(setq iv (#bit_Separator 32 $iv))
 (mapcar
   (function
     (lambda (dat)
